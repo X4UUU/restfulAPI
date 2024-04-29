@@ -1,0 +1,17 @@
+{
+  "name": "lowdb01",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.mjs",
+    "start": "node index.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "lowdb": "^7.0.1",
+    "uuid": "^9.0.1"
+  }
+}

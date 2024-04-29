@@ -1,0 +1,34 @@
+{
+  "users": {
+    "11829632-01ef-420b-8903-884ea648029e": {
+      "id": "11829632-01ef-420b-8903-884ea648029e",
+      "account": "testuser",
+      "password": "1111",
+      "name": "nameuser",
+      "head": "https://randomuser.me/api/portraits/men/44.jpg"
+    }
+  },
+  "products": [
+    {
+      "id": "93c6d199-481d-4223-99d3-0c2f3c92685c",
+      "title": "胡瓜",
+      "price": 30,
+      "stock": 100,
+      "createTime": 1714358540480
+    },
+    {
+      "id": "f14c57a2-da25-4352-8cdf-08ce0ad7f739",
+      "title": "櫛瓜",
+      "price": 45,
+      "stock": 100,
+      "createTime": 1714358408961
+    },
+    {
+      "id": "de2bb74e-d1ac-4f48-be1a-43f5b751e55a",
+      "title": "南瓜",
+      "price": 120,
+      "stock": 124,
+      "createTime": 1714358979341
+    }
+  ]
+}
