@@ -56,8 +56,22 @@ app.get("/api/users", async (req, res) => {
   res.status(200).json({ status: "success", users });
 });
 
-app.post("/api/users", upload.none(), (req, res) => {
-  res.status(200).json({ message: "新增一個使用者" });
+app.post("/api/users", upload.none(), async (req, res) => {
+  let id, error;
+  id = await usersAdd(req)
+    .then((result) => result)
+    .catch((err) => {
+      error = err;
+      return undefined;
+    });
+  if (error) {
+    res.status(400).json({
+      status: "error",
+      message: error.message ? error.message : "資料輸入不正確",
+    });
+    return false;
+  }
+  res.status(201).json({ status: "success", id, message: "使用者新增成功" });
 });
 
 app.post("/api/users/login", upload.none(), (req, res) => {
@@ -152,21 +166,32 @@ app.get("/api/users/:id", async (req, res) => {
       return undefined;
     });
   if (error) {
-    res
-      .status(404)
-      .json({
-        status: "error",
-        message: error.message ? error.message : "User not found",
-      });
+    res.status(404).json({
+      status: "error",
+      message: error.message ? error.message : "User not found",
+    });
     return false;
   }
   const { password, ...others } = user;
   res.status(200).json({ status: "success", user: others });
 });
 
-app.put("/api/users/:id", upload.none(), (req, res) => {
-  const id = req.params.id;
-  res.status(200).json({ message: `更新特定 ID 的使用者 ${id}` });
+app.put("/api/users/:id", checkToken, upload.none(), async (req, res) => {
+  let user, error;
+  user = await userUpdate(req)
+    .then((result) => result)
+    .catch((err) => {
+      error = err;
+      return undefined;
+    });
+  if (error) {
+    res.status(400).json({
+      status: "error",
+      message: error.message ? error.message : "資料輸入不正確",
+    });
+    return false;
+  }
+  res.status(200).json({ status: "success", id, message: "使用者修改成功" });
 });
 
 app.delete("/api/users/:id", (req, res) => {
@@ -179,20 +204,41 @@ app.listen(3000, () => {
 });
 
 function userSearch(req) {
-  return new Promise((resolve, reject) => {
-    
-  });
+  return new Promise((resolve, reject) => {});
 }
 
 function userUpdate(req) {
-  return new Promise((resolve, reject) => {
-    
+  return new Promise(async (resolve, reject) => {
+    const id = req.params.id;
+    const { password, name, head } = req.body;
+    const { id: idToken } = req.decoded;
+    if (id === idToken) {
+      return reject(new Error("沒有權限"));
+    }
+    let user = db.data.users.find((u) => u.id === id);
+    if (user) {
+      Object.assign(user, { password, name, head });
+      await db.write();
+      resolve(user);
+    }
   });
 }
 
 function userAdd(req) {
-  return new Promise((resolve, reject) => {
-    
+  return new Promise(async (resolve, reject) => {
+    const { account, password, name, mail, head } = req.body;
+    let result = db.data.users.find((u) => u.account === account);
+    if (result) {
+      return reject(new Error("帳號已經有人使用"));
+    }
+    result = db.data.user.find((u) => u.mail === mail);
+    if (result) {
+      return reject(new Error("信箱已經被註冊過了"));
+    }
+    const id = uuidv4();
+    db.data.users.push({ id, account, password, name, mail, head });
+    await db.write();
+    resolve(id);
   });
 }
 

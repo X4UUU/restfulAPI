@@ -124,16 +124,34 @@ app.get("/api/users/status", checkToken, (req, res) => {
   }
 });
 
-app.get("/api/products", (req, res) => {
-  const id = req.query.id;
-  if (id) {
-    res.status(200).json({ message: `獲取所有產品` });
-  } else {
-    res.status(400).json({
-      status: "error",
-      message: "找不到使用者，帳號錯誤",
+// app.get("/api/products", (req, res) => {
+//   const id = req.query.id;
+//   if (id) {
+//     res.status(200).json({ message: `獲取所有產品` });
+//   } else {
+//     res.status(400).json({
+//       status: "error",
+//       message: "找不到使用者，帳號錯誤",
+//     });
+//   }
+// });
+
+app.get("/api/users", async (req, res) => {
+  let users, error;
+  users = await usersAll()
+    .then((result) => result)
+    .catch((err) => {
+      error = new Error(err);
+      return undefined;
     });
+  if (error) {
+    res.status(404).json({
+      status: "error",
+      message: error.message,
+    });
+    return false;
   }
+  res.status(200).json({ status: "success", users });
 });
 
 app.get("/api/products/search?id=1", (req, res) => {
