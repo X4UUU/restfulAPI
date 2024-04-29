@@ -5,15 +5,16 @@ import { v4 as uuidv4 } from "uuid";
 const defaultData = { users: {}, products: [] };
 const db = new Low(new JSONFile("./db2.json"), defaultData);
 await db.read();
-const uid = uuidv4();
-const user = {
-    id:uid,
-    account: "testuser",
-    password: "1111",
-    name: "nameuser",
-    head: "https://randomuser.me/api/portraits/men/44.jpg",
-}
-db.data.users[uid] = user;
+console.log(db.data.products);
+// const uid = uuidv4();
+// const user = {
+//     id:uid,
+//     account: "testuser",
+//     password: "1111",
+//     name: "nameuser",
+//     head: "https://randomuser.me/api/portraits/men/44.jpg",
+// }
+// db.data.users[uid] = user;
 await db.write();
 
 // const product = {
