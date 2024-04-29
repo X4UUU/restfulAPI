@@ -38,22 +38,8 @@ app.get("/", (req, res) => {
   res.send("網站首頁");
 });
 
-app.get("/api/users", async (req, res) => {
-  let users, error;
-  users = await usersAll()
-    .then((result) => result)
-    .catch((err) => {
-      error = new Error(err);
-      return undefined;
-    });
-  if (error) {
-    res.status(404).json({
-      status: "error",
-      message: error.message,
-    });
-    return false;
-  }
-  res.status(200).json({ status: "success", users });
+app.get("/api/users", (req, res) => {
+  res.status(200).json({ message: "獲取所有使用者" });
 });
 
 app.post("/api/users", upload.none(), (req, res) => {
@@ -138,86 +124,46 @@ app.get("/api/users/status", checkToken, (req, res) => {
   }
 });
 
-app.get("/api/users/search", (req, res) => {
+app.get("/api/products", (req, res) => {
+  const id = req.query.id;
+  if (id) {
+    res.status(200).json({ message: `獲取所有產品` });
+  } else {
+    res.status(400).json({
+      status: "error",
+      message: "找不到使用者，帳號錯誤",
+    });
+  }
+});
+
+app.get("/api/products/search?id=1", (req, res) => {
   const id = req.query.id;
   res.status(200).json({ message: `使用 ID 作為搜尋條件來搜尋使用者 ${id}` });
 });
 
-app.get("/api/users/:id", async (req, res) => {
-  let user, error;
-  user = await userSingle(req)
-    .then((result) => result)
-    .catch((err) => {
-      error = err;
-      return undefined;
-    });
-  if (error) {
-    res
-      .status(404)
-      .json({
-        status: "error",
-        message: error.message ? error.message : "User not found",
-      });
-    return false;
-  }
-  const { password, ...others } = user;
-  res.status(200).json({ status: "success", user: others });
+app.post("/api/products", (req, res) => {
+  const id = req.params.id;
+  res.status(200).json({ message: "Product updated successfully" });
 });
 
-app.put("/api/users/:id", upload.none(), (req, res) => {
+app.put("/api/products/1", upload.none(), (req, res) => {
   const id = req.params.id;
-  res.status(200).json({ message: `更新特定 ID 的使用者 ${id}` });
+  res.status(200).json({ message: "Product updated successfully" });
 });
 
-app.delete("/api/users/:id", (req, res) => {
+app.delete("/api/products/1", (req, res) => {
   const id = req.params.id;
-  res.status(200).json({ message: `刪除特定 ID 的使用者 ${id}` });
+  res.status(200).json({ message: "Product deleted successfully" });
+});
+
+app.get("/api/products/search?id=1", (req, res) => {
+  const id = req.query.id;
+  res.status(200).json({ message: `使用 ID 作為搜尋條件來搜尋使用者 ${id}` });
 });
 
 app.listen(3000, () => {
   console.log("running at http://localhost:3000");
 });
-
-function userSearch(req) {
-  return new Promise((resolve, reject) => {
-    
-  });
-}
-
-function userUpdate(req) {
-  return new Promise((resolve, reject) => {
-    
-  });
-}
-
-function userAdd(req) {
-  return new Promise((resolve, reject) => {
-    
-  });
-}
-
-function userSingle(req) {
-  return new Promise((resolve, reject) => {
-    const id = req.params.id;
-    let result = db.data.users.find((u) => u.id === id);
-    if (result) {
-      resolve(result);
-    } else {
-      reject(new Error("找不到使用者"));
-    }
-  });
-}
-
-function usersAll() {
-  return new Promise((resolve, reject) => {
-    let users = db.data.users;
-    if (users) {
-      resolve(users);
-    } else {
-      reject(new Error("找不到使用者"));
-    }
-  });
-}
 
 function checkToken(req, res, next) {
   let token = req.get("Authorization");

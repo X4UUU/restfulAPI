@@ -3,7 +3,7 @@ import { JSONFile } from "lowdb/node";
 import { v4 as uuidv4 } from "uuid";
 
 const defaultData = { users: {}, products: [] };
-const db = new Low(new JSONFile("./db2.json"), defaultData);
+const db = new Low(new JSONFile("./db.json"), defaultData);
 await db.read();
 
 db.data.products = db.data.products.filter(
@@ -27,7 +27,7 @@ db.data.products = db.data.products.filter(
 // db.data.products.find(
 //   (p) => p.id === "f14c57a2-da25-4352-8cdf-08ce0ad7f739"
 // ).stock = 50;
-console.log(data);
+// console.log(data);
 // console.log(db.data.products.filter((p) => p.title.includes("瓜")));
 // console.log(db.data.products.find(p => p.title === "胡瓜"));
 // const uid = uuidv4();
@@ -39,7 +39,7 @@ console.log(data);
 //     head: "https://randomuser.me/api/portraits/men/44.jpg",
 // }
 // db.data.users[uid] = user;
-await db.write();
+// await db.write();
 
 // const product = {
 //   id: uuidv4(),
