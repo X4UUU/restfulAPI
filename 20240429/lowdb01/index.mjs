@@ -5,7 +5,31 @@ import { v4 as uuidv4 } from "uuid";
 const defaultData = { users: {}, products: [] };
 const db = new Low(new JSONFile("./db2.json"), defaultData);
 await db.read();
-console.log(db.data.products);
+
+db.data.products = db.data.products.filter(
+  (p) => p.id !== "f14c57a2-da25-4352-8cdf-08ce0ad7f739"
+);
+// let p = db.data.products.find(
+//   p => p.id === "f14c57a2-da25-4352-8cdf-08ce0ad7f739"
+// );
+// let price = 40;
+// let stock = 10;
+// Object.assign(p, { price, stock });
+// await db.write();
+
+// let page = 1;
+// let limit = 5;
+// let start = (page - 1) * limit;
+// let end = page * limit;
+// sort((a, b) => b.price - a.price)以呈現升冪、降冪
+// let data = db.data.products.sort((a, b) => b.price - a.price).slice(start, end);
+// let data = db.data.products.slice(start, end).sort((a, b) => b.price - a.price);
+// db.data.products.find(
+//   (p) => p.id === "f14c57a2-da25-4352-8cdf-08ce0ad7f739"
+// ).stock = 50;
+console.log(data);
+// console.log(db.data.products.filter((p) => p.title.includes("瓜")));
+// console.log(db.data.products.find(p => p.title === "胡瓜"));
 // const uid = uuidv4();
 // const user = {
 //     id:uid,
