@@ -38,142 +38,37 @@ app.get("/", (req, res) => {
   res.send("網站首頁");
 });
 
-app.get("/api/users", (req, res) => {
-  res.status(200).json({ message: "獲取所有使用者" });
-});
-
-app.post("/api/users", upload.none(), (req, res) => {
-  res.status(200).json({ message: "新增一個使用者" });
-});
-
-app.post("/api/users/login", upload.none(), (req, res) => {
-  const { account, password } = req.body;
-  // let user = users.find(u => u.account === account && u.password === password);
-  let user = db.data.users.find(
-    (u) => u.account === account && u.password === password
-  );
-  if (user) {
-    const token = jwt.sign(
-      {
-        account: user.account,
-        name: user.name,
-        mail: user.mail,
-        head: user.head,
-      },
-      secretKey,
-      {
-        expiresIn: "30m",
-      }
-    );
-    res.status(200).json({
-      status: "success",
-      token,
-    });
-  } else {
-    res.status(400).json({
-      status: "error",
-      message: "找不到使用者，帳號或密碼錯誤",
-    });
-  }
-});
-
-app.post("/api/users/logout", checkToken, (req, res) => {
-  const token = jwt.sign(
-    {
-      account: undefined,
-      name: undefined,
-      mail: undefined,
-      head: undefined,
-    },
-    secretKey,
-    {
-      expiresIn: "-10s",
-    }
-  );
-  res.status(200).json({
-    status: "success",
-    token,
-  });
-});
-
-app.get("/api/users/status", checkToken, (req, res) => {
-  // const user = users.find(u => u.account === req.decoded.account);
-  const user = db.data.users.find((u) => u.account === req.decoded.account);
-  if (user) {
-    const token = jwt.sign(
-      {
-        account: user.account,
-        name: user.name,
-        mail: user.mail,
-        head: user.head,
-      },
-      secretKey,
-      {
-        expiresIn: "30m",
-      }
-    );
-    res.status(200).json({
-      status: "success",
-      token,
-    });
-  } else {
-    res.status(400).json({
-      status: "error",
-      message: "找不到使用者，帳號錯誤",
-    });
-  }
-});
-
-// app.get("/api/products", (req, res) => {
-//   const id = req.query.id;
-//   if (id) {
-//     res.status(200).json({ message: `獲取所有產品` });
-//   } else {
-//     res.status(400).json({
-//       status: "error",
-//       message: "找不到使用者，帳號錯誤",
-//     });
-//   }
-// });
-
-app.get("/api/users", async (req, res) => {
-  let users, error;
-  users = await usersAll()
-    .then((result) => result)
-    .catch((err) => {
-      error = new Error(err);
-      return undefined;
-    });
-  if (error) {
-    res.status(404).json({
-      status: "error",
-      message: error.message,
-    });
-    return false;
-  }
-  res.status(200).json({ status: "success", users });
-});
-
-app.get("/api/products/search?id=1", (req, res) => {
+// 得到所有產品
+app.get("/api/products", (req, res) => {
   const id = req.query.id;
-  res.status(200).json({ message: `使用 ID 作為搜尋條件來搜尋使用者 ${id}` });
+  res.status(200).json({ message: `得到所有產品` });
 });
 
+//得到產品 ID 為 1 的檔案
+app.get("/api/products/1", (req, res) => {
+  const id = req.query.id;
+  res.status(200).json({ message: `得到產品 ID 為 1 的檔案` });
+});
+
+//新增一個產品
 app.post("/api/products", (req, res) => {
   const id = req.params.id;
-  res.status(200).json({ message: "Product updated successfully" });
+  res.status(200).json({ message: "Product created successfully" });
 });
 
-app.put("/api/products/1", upload.none(), (req, res) => {
+// 更新產品 ID 為 1 的檔案
+app.put("/api/products/1", (req, res) => {
   const id = req.params.id;
   res.status(200).json({ message: "Product updated successfully" });
 });
 
+// 刪除 ID 為 1 的產品
 app.delete("/api/products/1", (req, res) => {
   const id = req.params.id;
   res.status(200).json({ message: "Product deleted successfully" });
 });
 
+// 用 id 做為搜尋條件搜尋產品
 app.get("/api/products/search?id=1", (req, res) => {
   const id = req.query.id;
   res.status(200).json({ message: `使用 ID 作為搜尋條件來搜尋使用者 ${id}` });
